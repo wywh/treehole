@@ -1,0 +1,12 @@
+# -*- coding: utf-8 -*-
+#
+#This source code was published under GPL v3
+#
+#Copyright (C) 2017 Too-Naive
+#
+botToken = ''
+sqlhost = "127.0.0.1"
+sqlport = 3306
+sqluser = 'root'
+sqlpwd = 'root'
+sqlname = 'treehole'
