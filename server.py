@@ -45,7 +45,7 @@ def onMessage(msg):
 		sql.close()
 		return
 	if not result and msg['text'] == '/license':
-		bot.sendMessage('''
+		bot.sendMessage(chat_id,'''
 We guarantee that we will send a message in a completely anonymous way. 
 The bot will only record your id and prevent spam from being sent. 
 All messages you send to the bot are not guaranteed to be published, 
@@ -69,9 +69,9 @@ Author : @stdssr
 			sql.execute("UPDATE `users` SET `messagesInCycle` = %d WHERE `user_id` = %d"%(result[0][6],chat_id))
 		else:
 			if result[0][6] >= MESSAGE_PEAR_DAY:
-				bot.sendMessage('Portal burn out! It may take significant time for the Portal to reset.')
+				bot.sendMessage(chat_id,'Portal burn out! It may take significant time for the Portal to reset.')
 			else:
-				bot.sendMessage('Please wait sometime to cold down yourself.')
+				bot.sendMessage(chat_id,'Please wait sometime to cold down yourself.')
 			sql.close()
 			return
 		result = sql.query("SELECT `user_id` FROM `users` WHERE `isForwardTarget` = 1")
