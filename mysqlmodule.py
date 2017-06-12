@@ -25,7 +25,7 @@ class mysqlModule:
 	def getData(self):
 		return self.cursor.fetchall()
 	def query(self,sql):
-		self.executeSQL(sql)
+		self.execute(sql)
 		return self.getData()
 	def close(self):
 		self.db.commit()

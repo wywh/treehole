@@ -1,7 +1,7 @@
-
 DROP DATABASE IF EXISTS `treehole`;
-CREATE DATABASE `treehol1e` COLLATE utf8_general_ci;;
+CREATE DATABASE `treehole` COLLATE utf8_general_ci;;
 
+use `treehole`;
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `user_id` bigint(20) NOT NULL,

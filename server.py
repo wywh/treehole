@@ -18,12 +18,13 @@ def datetimeFromNow(timestamp):
 	return datetimeFromNowEx(datetime.datetime.now(),timestamp)
 
 def datetimeFromNowEx(timestampnow,timestamp):
-	return (timestampnow.replace(microsecond=0)-timestamp).total_seconds()
+	return (timestampnow.replace(microsecond=0)-timestamp.replace(microsecond=0)).total_seconds()
 
-def sendMessage2Group(chatGroup):
+def sendMessage2Group(chatGroup,msg):
 	global bot
 	for x in chatGroup:
-		bot.sendMessage(chatGroup)
+		bot.sendMessage(x,msg)
+		time.sleep(1)
 
 def onMessage(msg):
 	global bot
@@ -37,7 +38,7 @@ def onMessage(msg):
 		return
 	nowtimestamp = datetime.datetime.now()
 	sql = mm(sqlhost,sqlport,sqluser,sqlpwd,sqlname)
-	result = mm.query("SELECT * FROM `users` WHERE `user_id` = %d"%chat_id)
+	result = sql.query("SELECT * FROM `users` WHERE `user_id` = %d"%chat_id)
 	if not result and msg['text'] == '/ACCEPT':
 		sql.execute("INSERT INTO `users` (`user_id`) VALUES (%d)"%chat_id)
 		sql.close()
@@ -50,16 +51,16 @@ def onMessage(msg):
 		bot.sendMessage(chat_id,"YOU HAS BEEN BLOCKED, PLEASE CONTACT ADMINISTRATOR")
 		sql.close()
 		return
-	elif datetimeFromNow(result[0][5]) > MESSAGE_COLD_DOWN_CYCLE5:
-		if datetimeFromNow(result[0][4]) > MESSAGE_PEAR_CYCLE:
-			sql.execute("UPDATE `users` SET `messageCycleTS` = TIMESTAMP(), `messagesInCycle` = 1 WHERE `user_id` = %d"%chat_id)
+	elif not result[0][5] or datetimeFromNow(result[0][5]) > MESSAGE_COLD_DOWN_CYCLE:
+		if not result[0][4] or datetimeFromNow(result[0][4]) > MESSAGE_PEAR_CYCLE:
+			sql.execute("UPDATE `users` SET `messageCycleTS` = CURRENT_TIMESTAMP, `messagesInCycle` = 1 WHERE `user_id` = %d"%chat_id)
 		elif result[0][6] < MESSAGE_PEAR_DAY:
 			sql.execute("UPDATE `users` SET `messagesInCycle` = %d WHERE `user_id` = %d"%(result[0][6],chat_id))
 		else:
 			sql.close()
 			return
 		result = sql.query("SELECT `user_id` FROM `users` WHERE `isForwardTarget` = 1")
-		sendMessage2Group((x[0] for x in result))
+		sendMessage2Group(list(x[0] for x in result),msg['text'])
 		sql.close()
 		pass
 	pass
